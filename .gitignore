@@ -1,0 +1,14 @@
+**/.pio/
+
+.vscode/
+*.code-workspace
+
+__pycache__/
+*.pyc
+venv/
+.env
+
+.DS_Store
+
+cad/export/*
+!cad/export/.gitkeep
