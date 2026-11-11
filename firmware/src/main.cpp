@@ -1,3 +1,5 @@
+// TODO: update limits
+
 #include <Arduino.h>
 #include <ESP32Servo.h>
 
@@ -20,7 +22,20 @@ void writeServo (int servo, int angle) {
     Serial.println(servo);
     Serial.print("Angle: ");
     Serial.println(angle);
-}
+
+    if (servo == 1 || servo == 5) {
+        upperLeftServo.write(constrain(180 - angle, 90 , 170));
+    }
+    if (servo == 3 || servo == 5) {
+        upperRightServo.write(constrain(angle, 10, 90));
+    }
+    if (servo == 2 || servo == 6) {
+        lowerLeftServo.write(constrain(180 - angle, 10 , 160));
+    }
+    if (servo == 4 || servo == 6) {
+        lowerRightServo.write(constrain(angle, 30, 170));
+    }
+}   
 
 void servoSelection() {
     servoSelectionText = true;
