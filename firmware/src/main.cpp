@@ -12,6 +12,9 @@ int servoSelectionValue;
 bool angleInputText = false;
 int angleInputValue;
 
+const int upperServoError = 6;
+const int lowerServoError = 3;
+
 Servo lowerRightServo;
 Servo upperRightServo;
 Servo upperLeftServo;
@@ -24,16 +27,16 @@ void writeServo (int servo, int angle) {
     Serial.println(angle);
 
     if (servo == 1 || servo == 5) {
-        upperLeftServo.write(constrain(180 - angle, 90 , 170));
+        upperLeftServo.write(constrain((180 - upperServoError) - angle, 90 , 180));
     }
     if (servo == 3 || servo == 5) {
-        upperRightServo.write(constrain(angle, 10, 90));
+        upperRightServo.write(constrain(angle, 0, 90));
     }
     if (servo == 2 || servo == 6) {
-        lowerLeftServo.write(constrain(180 - angle, 10 , 160));
+        lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 150));
     }
     if (servo == 4 || servo == 6) {
-        lowerRightServo.write(constrain(angle, 30, 170));
+        lowerRightServo.write(constrain(angle, 30, 180));
     }
 }   
 
