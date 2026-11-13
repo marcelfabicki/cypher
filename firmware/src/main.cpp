@@ -1,16 +1,11 @@
-// TODO: update limits
-
 #include <Arduino.h>
 #include <ESP32Servo.h>
+#include <cmath>
 
+const float upperLegLength = 80.1;
+const float lowerLegLength = 136.25;
 
-int selectionStage = 1;
-
-bool servoSelectionText = false;
-int servoSelectionValue;
-
-bool angleInputText = false;
-int angleInputValue;
+const float pi = 3.14159;
 
 const int upperServoError = 6;
 const int lowerServoError = 3;
@@ -20,99 +15,60 @@ Servo upperRightServo;
 Servo upperLeftServo;
 Servo lowerLeftServo;
 
-void writeServo (int servo, int angle) {
-    Serial.print("Driving: ");
-    Serial.println(servo);
-    Serial.print("Angle: ");
-    Serial.println(angle);
+int x = -40;
+int y;
 
-    if (servo == 1 || servo == 5) {
+float r = sqrt(sq(x) + sq(y));
+
+// TODO: function to check (x, y) reachability
+
+float kneeAngle(int xInput, int yInput) {
+    float r = sqrt(sq(xInput) + sq(yInput));
+    return acos((sq(upperLegLength) + sq(lowerLegLength) - sq(r)) / (2 * upperLegLength * lowerLegLength)) * 180 / pi;
+}
+
+float hipAngle(int xInput, int yInput) {
+    float r = sqrt(sq(xInput) + sq(yInput));
+    return (-atan2(y, x) - acos((sq(r) + sq(upperLegLength) - sq(lowerLegLength)) / (2 * r * upperLegLength))) * 180 / pi;
+}
+
+void writeServo (int servo, int angle) {
+    if (servo == 1) {
         upperLeftServo.write(constrain((180 - upperServoError) - angle, 90 , 180));
-    }
-    if (servo == 3 || servo == 5) {
         upperRightServo.write(constrain(angle, 0, 90));
     }
-    if (servo == 2 || servo == 6) {
+
+    if (servo == 2) {
         lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 150));
-    }
-    if (servo == 4 || servo == 6) {
         lowerRightServo.write(constrain(angle, 30, 180));
     }
+  
 }   
-
-void servoSelection() {
-    servoSelectionText = true;
-    if (Serial.available() > 0) {
-        String input = Serial.readStringUntil('\n');
-        input.trim();
-        int number = input.toInt();
-
-        if (number >= 1 && number <= 6) {
-            servoSelectionValue = number;
-            selectionStage = 2;
-            servoSelectionText = false;
-            return;
-        }
-
-        Serial.println("Please enter a number between 1-6");
-    }
-}
-
-void angleInput() {
-    angleInputText = true;
-    if (Serial.available() > 0) {
-        String input = Serial.readStringUntil('\n');
-        input.trim();
-
-        if (input == "q") {
-            selectionStage = 1;
-            angleInputText = false;
-            return;   
-        }
-
-        int number = input.toInt();
-
-        if (number >= 0 && number <= 180) {
-            angleInputValue = number;
-            writeServo(servoSelectionValue, angleInputValue);
-            return;
-        }
-    
-        Serial.println("Please enter an angle between 0-180, or q to quit");
-    }
-}
 
 void setup() {
     Serial.begin(115200);
     delay(500);
-    
-	lowerLeftServo.attach(18);
+
+    lowerLeftServo.attach(18);
     upperLeftServo.attach(19);
 
     lowerRightServo.attach(33);
     upperRightServo.attach(32);
+
 }
 
 void loop() {
-    switch (selectionStage) {
-        case 1:
-            if (servoSelectionText == false) {
-                Serial.println("Please select which servo(s) to drive 1-6:");
-                Serial.println("1 - Upper Left");
-                Serial.println("2 - Lower Left");
-                Serial.println("3 - Upper Right");
-                Serial.println("4 - Lower Right");
-                Serial.println("5 - Both Upper");
-                Serial.println("6 - Lower Both");
-            }
-            servoSelection();
-            break;
-        case 2:
-            if (angleInputText == false) {
-                Serial.println("Please enter an angle between 0-180, or q to quit");
-            }
-            angleInput();
-            break;
+    /*
+    for (int i = 60; i <= 200; i = i + 2) {
+        y = -i;
+        writeServo(1, hipAngle(x, y));
+        writeServo(2, 180 - kneeAngle(x, y));
+        delay(10);
     }
-
+    for (int i = 200; i >= 60; i = i - 2) {
+        y = -i;
+        writeServo(1, hipAngle(x, y));
+        writeServo(2, 180 - kneeAngle(x, y));
+        delay(10);
+    }*/
 }
