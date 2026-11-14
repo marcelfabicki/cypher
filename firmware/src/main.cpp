@@ -10,17 +10,19 @@ const float pi = 3.14159;
 const int upperServoError = 6;
 const int lowerServoError = 3;
 
+bool xInputText = false;
+bool yInputText = false;
+
+int writeType = 1;
+
 Servo lowerRightServo;
 Servo upperRightServo;
 Servo upperLeftServo;
 Servo lowerLeftServo;
 
-int x = -40;
+int x;
 int y;
 
-float r = sqrt(sq(x) + sq(y));
-
-// TODO: function to check (x, y) reachability
 
 float kneeAngle(int xInput, int yInput) {
     float r = sqrt(sq(xInput) + sq(yInput));
@@ -43,22 +45,56 @@ void writeServo (int servo, int angle) {
         lowerRightServo.write(constrain(angle, 30, 180));
     }
   
-}   
-
-void setup() {
-    Serial.begin(115200);
-    delay(500);
-
-    lowerLeftServo.attach(18);
-    upperLeftServo.attach(19);
-
-    lowerRightServo.attach(33);
-    upperRightServo.attach(32);
-
 }
 
-void loop() {
-    /*
+void checkInput() {
+    int m = sqrt(sq(x) + sq(y));
+    if (m > (upperLegLength + lowerLegLength) || m < (lowerLegLength - upperLegLength) || y > 0) {
+        Serial.println("Invalid coordinate, please try again");
+        writeType = 1;
+        return;
+    }
+    Serial.println("good input");
+    writeServo(1, hipAngle(x, y));
+    writeServo(2, 180 - kneeAngle(x, y));
+    writeType = 1;
+
+    
+}
+
+void xInput() {
+    xInputText = true;
+    if (Serial.available() > 0) {
+        String input = Serial.readStringUntil('\n');
+        input.trim();
+        int number = input.toInt();
+
+        if (x != number) {
+            writeType = 2;
+            x = number;
+            xInputText = false;
+        }
+    }
+}
+
+void yInput() {
+    yInputText = true;
+    if (Serial.available() > 0) {
+        String input = Serial.readStringUntil('\n');
+        input.trim();
+        int number = input.toInt();
+
+        if (y != number) {
+            y = number;
+            yInputText = false;
+            checkInput();
+        }
+    }
+}
+
+
+
+void yMovement() {
     for (int i = 60; i <= 200; i = i + 2) {
         y = -i;
         writeServo(1, hipAngle(x, y));
@@ -70,5 +106,43 @@ void loop() {
         writeServo(1, hipAngle(x, y));
         writeServo(2, 180 - kneeAngle(x, y));
         delay(10);
-    }*/
+    }
+}
+
+void xMovement() {
+
+}
+
+void circleMovement() {
+
+}
+
+void setup() {
+    Serial.begin(115200);
+    delay(500);
+
+    lowerLeftServo.attach(18);
+    upperLeftServo.attach(19);
+
+    lowerRightServo.attach(33);
+    upperRightServo.attach(32);
+
+    delay(500);
+}
+
+void loop() {
+    switch (writeType) {
+        case 1:
+            if (xInputText == false) {
+                Serial.println("Enter a value for x: ");
+            }
+            xInput();
+            break;
+        case 2:
+            if (yInputText == false) {
+                Serial.println("Enter a value for y: ");
+            }    
+            yInput();
+            break;
+    }
 }
