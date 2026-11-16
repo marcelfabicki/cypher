@@ -15,6 +15,3 @@ constexpr float pi = 3.14159;
 
 constexpr int upperServoError = 6;
 constexpr int lowerServoError = 3;
-
-int x;
-int y;
