@@ -10,9 +10,10 @@ void setup() {
     initialiseIMU();
     delay(500);
 
-    setLegPositions(5, -200);
+    //setLegPositions(5, -200);
 }
 
 void loop() {
-    readSensor();
+    //readSensor();
+    Serial.println(tilt());
 }
