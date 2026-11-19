@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "leg_control.h"
 #include "imu.h"
+#include "pid_control.h"
 
 
 void setup() {
@@ -14,6 +15,6 @@ void setup() {
 }
 
 void loop() {
-    Serial.println(tilt());
-   
+    Serial.println(outputTorque());
+
 }
