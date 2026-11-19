@@ -9,14 +9,14 @@ void setup() {
     Serial.begin(115200);
     delay(500);
     initialiseServos();
-    initialiseIMU();
-    initialiseMotors();
+    //initialiseIMU();
+    //initialiseMotors();
     delay(500);
 
-    setLegPositions(16, -200);
+    //setLegPositions(-58.2, -3);
 }
 
 void loop() {
-   driveMotors(outputTorque(), outputTorque());
-   Serial.println(outputTorque());
+   //driveMotors(outputTorque(), outputTorque());
+   //Serial.println(outputTorque());
 }

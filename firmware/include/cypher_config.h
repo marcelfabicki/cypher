@@ -13,8 +13,8 @@ constexpr float lowerLegLength = 136.25;
 
 constexpr float pi = 3.14159;
 
-constexpr int upperServoError = 6;
-constexpr int lowerServoError = 3;
+constexpr float upperServoError = 6;
+constexpr float lowerServoError = 1.5;
 
 constexpr double imuGyroError = 0.08443;
 constexpr double imuElapsedTime = 0.00283;

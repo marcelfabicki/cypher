@@ -27,14 +27,14 @@ namespace {
         }
 
         if (servo == 'l') {
-            lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 150));
-            lowerRightServo.write(constrain(angle, 30, 180));
+            lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 170));
+            lowerRightServo.write(constrain(angle, 10, 180));
         }
   
     }
     bool checkInput(int x, int y) {
         float m = sqrt(sq(x) + sq(y));
-        return m < (upperLegLength + lowerLegLength) && m > (lowerLegLength - upperLegLength) && y < 0;
+        return m < (upperLegLength + lowerLegLength) && m > (lowerLegLength - upperLegLength) && y <= 10;
     }   
 }
 
@@ -55,4 +55,18 @@ void setLegPositions (int x, int y) {
 
     writeServo('u', upperAngle(x, y));
     writeServo('l', lowerAngle(x, y)); 
+}
+
+void setTimedLegPosition (int x, int y, int time) {
+
+}
+
+void setLegAngle(int upper, int lower) {
+    writeServo('u', upper);
+    writeServo('l', lower);  
+}
+
+void homeServos() {
+    writeServo('u', 0);
+    writeServo('l', 165); 
 }
