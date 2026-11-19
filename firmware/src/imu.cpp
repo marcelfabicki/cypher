@@ -3,6 +3,7 @@
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
+#include <math.h>
 
 namespace {
     Adafruit_MPU6050 mpu;
@@ -29,6 +30,6 @@ float tilt() {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
-    tiltAngle = tiltAngle + ((g.gyro.x + imuGyroError) * imuElapsedTime);
+    tiltAngle = (0.98 * (tiltAngle + ((g.gyro.x + imuGyroError) * imuElapsedTime)) + (0.02 * (atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError))));
     return tiltAngle;
 }

@@ -18,3 +18,5 @@ constexpr int lowerServoError = 3;
 
 constexpr double imuGyroError = 0.08443;
 constexpr double imuElapsedTime = 0.00283;
+constexpr float imuYAxisError = 0.08;
+constexpr float imuZAxisError = - 0.22;

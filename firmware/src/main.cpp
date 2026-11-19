@@ -14,6 +14,6 @@ void setup() {
 }
 
 void loop() {
-    //readSensor();
     Serial.println(tilt());
+   
 }
