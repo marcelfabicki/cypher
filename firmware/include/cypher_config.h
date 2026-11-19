@@ -14,7 +14,7 @@ constexpr float lowerLegLength = 136.25;
 constexpr float pi = 3.14159;
 
 constexpr float upperServoError = 6;
-constexpr float lowerServoError = 1.5;
+constexpr float lowerServoError = 1;
 
 constexpr double imuGyroError = 0.08443;
 constexpr double imuElapsedTime = 0.00283;

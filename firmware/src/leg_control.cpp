@@ -10,31 +10,33 @@ namespace {
     Servo upperLeftServo;
     Servo lowerLeftServo;
 
-    float lowerAngle(int x, int y) {
+    float lowerAngle(float x, float y) {
         float r = sqrt(sq(x) + sq(y));
         return 180 - acos((sq(upperLegLength) + sq(lowerLegLength) - sq(r)) / (2 * upperLegLength * lowerLegLength)) * 180 / pi;
     }
 
-    float upperAngle(int x, int y) {
+    float upperAngle(float x, float y) {
         float r = sqrt(sq(x) + sq(y));
         return (-atan2(y, x) - acos((sq(r) + sq(upperLegLength) - sq(lowerLegLength)) / (2 * r * upperLegLength))) * 180 / pi;
     }
 
-    void writeServo (char servo, int angle) {
+    void writeServo (char servo, float angle) {
         if (servo == 'u') {
+            angle = constrain(angle, 0.0f, 90.0f);
+
             upperLeftServo.write(constrain((180 - upperServoError) - angle, 90 , 180));
-            upperRightServo.write(constrain(angle, 0, 90));
+            upperRightServo.write(angle);
         }
 
         if (servo == 'l') {
-            lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 170));
-            lowerRightServo.write(constrain(angle, 10, 180));
+            lowerLeftServo.write(constrain((180 - lowerServoError) - angle, 0 , 180));
+            lowerRightServo.write(constrain(angle, 0, 180));
         }
   
     }
-    bool checkInput(int x, int y) {
+    bool checkInput(float x, float y) {
         float m = sqrt(sq(x) + sq(y));
-        return m < (upperLegLength + lowerLegLength) && m > (lowerLegLength - upperLegLength) && y <= 10;
+        return m <= (upperLegLength + lowerLegLength) && m >= (lowerLegLength - upperLegLength) && y <= 10;
     }   
 }
 
@@ -47,7 +49,7 @@ void initialiseServos() {
     upperRightServo.attach(upperRightServoPin);
 }
 
-void setLegPositions (int x, int y) {
+void setLegPositions (float x, float y) {
     if (!checkInput(x, y)) {
         Serial.println("Invalid point");
         return;
@@ -68,5 +70,6 @@ void setLegAngle(int upper, int lower) {
 
 void homeServos() {
     writeServo('u', 0);
-    writeServo('l', 165); 
+    writeServo('l', 180); 
+    // position (-56.15, 0)
 }

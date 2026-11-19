@@ -13,7 +13,8 @@ void setup() {
     //initialiseMotors();
     delay(500);
 
-    //setLegPositions(-58.2, -3);
+    //setLegPositions(-56.15, 0);
+    setLegAngle(0, 180);
 }
 
 void loop() {
