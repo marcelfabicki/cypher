@@ -30,6 +30,6 @@ float tilt() {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
 
-    tiltAngle = (0.98 * (tiltAngle + ((g.gyro.x + imuGyroError) * imuElapsedTime)) + (0.02 * (atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError))));
+    tiltAngle = 0.98 * (tiltAngle + (g.gyro.x + imuGyroError) * imuElapsedTime) + 0.02 * atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError);
     return tiltAngle;
 }
