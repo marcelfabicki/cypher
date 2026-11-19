@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "leg_control.h"
 #include "imu.h"
+#include "wheel_control.h"
 #include "pid_control.h"
 
 
@@ -9,12 +10,13 @@ void setup() {
     delay(500);
     initialiseServos();
     initialiseIMU();
+    initialiseMotors();
     delay(500);
 
-    //setLegPositions(5, -200);
+    setLegPositions(16, -200);
 }
 
 void loop() {
-    Serial.println(outputTorque());
-
+   driveMotors(outputTorque(), outputTorque());
+   Serial.println(outputTorque());
 }
