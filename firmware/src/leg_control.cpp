@@ -34,10 +34,15 @@ namespace {
         }
   
     }
-    bool checkInput(float x, float y) {
+    bool checkAngleInput(float upper, float lower) {
+        return upper >= 0 && upper <= 90 && lower >= 0 && lower <= 180;
+    }
+
+    bool checkPositionInput(float x, float y) {
         float m = sqrt(sq(x) + sq(y));
-        return m <= (upperLegLength + lowerLegLength) && m >= (lowerLegLength - upperLegLength) && y <= 10;
-    }   
+        return m <= (upperLegLength + lowerLegLength) && m >= (lowerLegLength - upperLegLength) && y <= 10 && checkAngleInput(upperAngle(x, y), lowerAngle(x, y));
+    }
+
 }
 
 
@@ -50,7 +55,7 @@ void initialiseServos() {
 }
 
 void setLegPositions (float x, float y) {
-    if (!checkInput(x, y)) {
+    if (!checkPositionInput(x, y)) {
         Serial.println("Invalid point");
         return;
     }
@@ -59,11 +64,7 @@ void setLegPositions (float x, float y) {
     writeServo('l', lowerAngle(x, y)); 
 }
 
-void setTimedLegPosition (int x, int y, int time) {
-
-}
-
-void setLegAngle(int upper, int lower) {
+void setLegAngle(float upper, float lower) {
     writeServo('u', upper);
     writeServo('l', lower);  
 }
@@ -72,4 +73,23 @@ void homeServos() {
     writeServo('u', 0);
     writeServo('l', 180); 
     // position (-56.15, 0)
+}
+
+void setTimedLegPosition (float x, float y, int time) {
+    if (!checkPositionInput(x, y)) {
+        Serial.println("Invalid point");
+        return;
+    }
+
+    homeServos();
+    delay(1000);
+
+    int steps = 50;
+    float targetUpper = upperAngle(x, y);
+    float targetLower = lowerAngle(x, y);
+
+    for (float i = 1; i <= steps; i++ ) {
+        setLegAngle(targetUpper * i / steps, ((targetLower - 180) * (i / steps) + 180));
+        delay(time / steps);
+    }
 }
