@@ -31,7 +31,7 @@ void readSensor() {
 float tilt() {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
-    timeDifference = (micros() - previousTime) * 1/1000000;
+    timeDifference = (micros() - previousTime) / 1000000.0f;
     previousTime = micros();
 
     tiltAngle = 0.98 * (tiltAngle + (g.gyro.x + imuGyroError) * timeDifference) + 0.02 * atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError);
