@@ -8,7 +8,9 @@
 namespace {
     Adafruit_MPU6050 mpu;
 
-    double tiltAngle;
+    float tiltAngle;
+    float timeDifference;
+    unsigned long previousTime;
 }
 void initialiseIMU() {
     mpu.begin();
@@ -29,13 +31,9 @@ void readSensor() {
 float tilt() {
     sensors_event_t a, g, temp;
     mpu.getEvent(&a, &g, &temp);
+    timeDifference = (micros() - previousTime) * 1/1000000;
+    previousTime = micros();
 
-    tiltAngle = 0.98 * (tiltAngle + (g.gyro.x + imuGyroError) * imuElapsedTime) + 0.02 * atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError);
+    tiltAngle = 0.98 * (tiltAngle + (g.gyro.x + imuGyroError) * timeDifference) + 0.02 * atan2(a.gyro.y + imuYAxisError, a.gyro.z + imuZAxisError);
     return tiltAngle;
-}
-
-float tiltSpeed() {
-    sensors_event_t a, g, temp;
-    mpu.getEvent(&a, &g, &temp);
-    return g.gyro.x + imuGyroError;
 }
